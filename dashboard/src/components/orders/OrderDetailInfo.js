@@ -12,10 +12,12 @@ const OrderDetailInfo = (props) => {
           </span>
           <div className="text">
             <h6 className="mb-1">ຂໍ້ມູນລູກຄ້າ</h6>
-            <p className="mb-1">
-              {order.user.name} <br />
-              <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
-            </p>
+            {order.user && (
+              <p className="mb-1">
+                {order.user.name} <br />
+                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+              </p>
+            )}
           </div>
         </article>
       </div>
@@ -27,8 +29,8 @@ const OrderDetailInfo = (props) => {
           <div className="text">
             <h6 className="mb-1">ຂໍ້ມູນການສັ່ງຊື້</h6>
             <p className="mb-1">
-              ຂໍ້ມູນການຈັດສົ່ງ: {order.shippingAddress.shipping} <br /> Pay method:{" "}
-              {order.paymentMethod}
+              ຂໍ້ມູນການຈັດສົ່ງ: {order.shippingAddress.shipping} <br /> Pay
+              method: {order.paymentMethod}
             </p>
           </div>
         </article>

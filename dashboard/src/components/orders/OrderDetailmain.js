@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import OrderDetailProducts from "./OrderDetailProducts";
 import OrderDetailInfo from "./OrderDetailInfo";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deliverOrder, getOrderDetails } from "../../Redux/Actions/OrderActions";
+import {
+  deliverOrder,
+  getOrderDetails,
+  paidOnePayOrder,
+} from "../../Redux/Actions/OrderActions";
 import Message from "./../LoadingError/Error";
 import Loading from "./../LoadingError/Loading";
 import moment from "moment";
-
 
 const OrderDetailmain = (props) => {
   const { orderId } = props;
@@ -22,11 +25,26 @@ const OrderDetailmain = (props) => {
   useEffect(() => {
     dispatch(getOrderDetails(orderId));
   }, [dispatch, orderId, successDelivered]);
-
   const deliverHandler = () => {
     dispatch(deliverOrder(order));
   };
+  const payHandler = () => {
+    dispatch(paidOnePayOrder(order));
+    window.location.reload();
+  };
 
+  const [statusPay, setStatusPay] = useState(false);
+  useEffect(() => {
+    if (order && order.paymentMethod == "PayPal") {
+      console.log("PayPal 123");
+      setStatusPay(false);
+    } else if (order && order.paymentMethod == "OnePay") {
+      console.log("OnePay 123");
+      setStatusPay(true);
+    }
+  }, [order && order.paymentMethod]);
+
+  console.log(statusPay);
   return (
     <section className="content-main">
       <div className="content-header">
@@ -97,11 +115,33 @@ const OrderDetailmain = (props) => {
                         onClick={deliverHandler}
                         className="btn btn-dark col-12"
                       >
-                        ຈັດສົ່ງແລ້ວສີນຄ້າ
+                        ຈັດສົ່ງສີນຄ້າ
                       </button>
                     </>
                   )}
                 </div>
+                {statusPay ? (
+                  <div className="box shadow-sm bg-light mt-2">
+                    {order.isPaid ? (
+                      <button className="btn btn-success col-12">
+                        ຈ່າຍເງີນສຳເລັດ
+                      </button>
+                    ) : (
+                      <>
+                        {loadingDelivered && <Loading />}
+                        <button
+                          onClick={payHandler}
+                          className="btn btn-dark col-12"
+                        >
+                          ຈ່າຍເງີນຖືກຕ້ອງ
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  // free box
+                  <p></p>
+                )}
               </div>
             </div>
           </div>
@@ -112,4 +152,3 @@ const OrderDetailmain = (props) => {
 };
 
 export default OrderDetailmain;
-

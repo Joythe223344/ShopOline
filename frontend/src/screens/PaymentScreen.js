@@ -9,6 +9,7 @@ const PaymentScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
+  console.log(cart.cartItems[0].qty);
   if (!shippingAddress) {
     history.push("/shipping");
   }
@@ -19,8 +20,14 @@ const PaymentScreen = ({ history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(savePaymentMethod(paymentMethod));
-    history.push("/placeorder");
+    console.log(paymentMethod);
+    if (paymentMethod == "PayPal") {
+      dispatch(savePaymentMethod(paymentMethod));
+      history.push("/placeorder");
+    } else if (paymentMethod == "OnePay") {
+      dispatch(savePaymentMethod(paymentMethod));
+      history.push("/placeorderOnePay");
+    }
   };
   return (
     <>
@@ -36,10 +43,22 @@ const PaymentScreen = ({ history }) => {
               <input
                 className="form-check-input"
                 type="radio"
-                value={paymentMethod}
+                value="PayPal"
+                checked={paymentMethod === "PayPal"}
                 onChange={(e) => setPaymentMethod(e.target.value)}
               />
-              <label className="form-check-label">PayPal or Credit Card</label>
+              <label className="form-check-label">PayPal</label>
+            </div>
+
+            <div className="radio-container">
+              <input
+                className="form-check-input"
+                type="radio"
+                value="OnePay"
+                checked={paymentMethod === "OnePay"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <label className="form-check-label">OnePay</label>
             </div>
           </div>
 

@@ -2,11 +2,21 @@ import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-
 const Orders = (props) => {
   const { orders } = props;
 
-
+  // kip
+  const formatCurrent = (price) => {
+    if (!price) {
+      return ""; // or some other default value
+    }
+    const formattedPrice = price.toLocaleString("id-ID", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true,
+    });
+    return formattedPrice.replace(".", ".");
+  };
   return (
     <table className="table">
       <thead>
@@ -25,11 +35,9 @@ const Orders = (props) => {
       <tbody>
         {orders.map((order) => (
           <tr key={order._id}>
-            <td>
-              <b>{order.user.name}</b>
-            </td>
-            <td>{order.user.email}</td>
-            <td>kip{order.totalPrice}</td>
+            <td>{order.user && <b>{order.user.name}</b>}</td>
+            <td>{order.user && <b>{order.user.email}</b>}</td>
+            <td>{formatCurrent(Number(order.totalPrice))} KIP</td>
             <td>
               {order.isPaid ? (
                 <span className="badge rounded-pill alert-success">

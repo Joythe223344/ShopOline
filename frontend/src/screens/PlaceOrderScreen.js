@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "./../components/LoadingError/Error";
 import { ORDER_CREATE_RESET } from "../Redux/Constans/OrderConstants";
 import { createOrder } from "../Redux/Actions/OrderActions";
-
+import { updateProductCountInStock } from "../Redux/Actions/ProductActions";
 
 const PlaceOrderScreen = ({ history }) => {
   window.scrollTo(0, 0);
@@ -54,8 +54,26 @@ const PlaceOrderScreen = ({ history }) => {
         totalPrice: cart.totalPrice,
       })
     );
+    cart.cartItems.forEach((element) => {
+      dispatch(updateProductCountInStock(element.product, element.qty));
+    });
   };
 
+  // kip
+  const formatCurrent = (price) => {
+    if (!price) {
+      return ""; // or some other default value
+    }
+    const formattedPrice = price.toLocaleString("id-ID", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true,
+    });
+    return formattedPrice.replace(".", ".");
+  };
+
+
+  
   return (
     <>
       <Header />
@@ -108,8 +126,7 @@ const PlaceOrderScreen = ({ history }) => {
                 </h5>
                 <p>
                   ທີ່ຢູ່: {cart.shippingAddress.username},{" "}
-                  {cart.shippingAddress.address},{" "}
-                  {cart.shippingAddress.number}
+                  {cart.shippingAddress.address}, {cart.shippingAddress.number}
                 </p>
               </div>
             </div>
@@ -119,9 +136,7 @@ const PlaceOrderScreen = ({ history }) => {
         <div className="row order-products justify-content-between">
           <div className="col-lg-8">
             {cart.cartItems.length === 0 ? (
-              <Message variant="alert-info mt-5">
-                Your order is empty
-                </Message>
+              <Message variant="alert-info mt-5">Your order is empty</Message>
             ) : (
               <>
                 {cart.cartItems.map((item, index) => (
@@ -140,7 +155,7 @@ const PlaceOrderScreen = ({ history }) => {
                     </div>
                     <div className="mt-3 mt-md-0 col-md-2 col-6 align-items-end  d-flex flex-column justify-content-center ">
                       <h4>ລາຄາລວມ</h4>
-                      <h6>${item.qty * item.price}</h6>
+                      <h6>{formatCurrent(Number(item.qty * item.price))} KIP</h6>
                     </div>
                   </div>
                 ))}
@@ -155,25 +170,25 @@ const PlaceOrderScreen = ({ history }) => {
                   <td>
                     <strong>Products</strong>
                   </td>
-                  <td>${cart.itemsPrice}</td>
+                  <td>{formatCurrent(Number(cart.itemsPrice))} KIP</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Shipping</strong>
                   </td>
-                  <td>${cart.shippingPrice}</td>
+                  <td>{formatCurrent(Number(cart.shippingPrice))} KIP</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Tax</strong>
                   </td>
-                  <td>${cart.taxPrice}</td>
+                  <td>{formatCurrent(Number(cart.taxPrice))} KIP</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Total</strong>
                   </td>
-                  <td>${cart.totalPrice}</td>
+                  <td>{formatCurrent(Number(cart.totalPrice))} KIP</td>
                 </tr>
               </tbody>
             </table>

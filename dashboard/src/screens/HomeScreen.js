@@ -4,6 +4,7 @@ import Main from "../components/Home/Main";
 import Sidebar from "./../components/sidebar";
 
 const HomeScreen = () => {
+  
   return (
     <>
       <Sidebar />

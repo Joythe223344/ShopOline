@@ -1,17 +1,18 @@
-
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
+  USER_DELETE_FAIL,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
   USER_LIST_FAIL,
   USER_LIST_REQUEST,
   USER_LIST_RESET,
   USER_LIST_SUCCESS,
-  USER_LOGIN_FAIL, 
-  USER_LOGIN_REQUEST, 
-  USER_LOGIN_SUCCESS, 
+  USER_LOGIN_FAIL,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
   USER_LOGOUT,
-  } from "../Constans/UserConstans";
-
+} from "../Constans/UserConstans";
 
 // LOGIN
 export const login = (email, password) => async (dispatch) => {
@@ -21,59 +22,55 @@ export const login = (email, password) => async (dispatch) => {
     pauseOnHover: false,
     autoClose: 2000,
   };
-    try {
-      dispatch({ type: USER_LOGIN_REQUEST });
-  
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-  
-      const { data } = await axios.post(
-        `/api/users/login`,
-        { email, password },
-        config
-      );
-       
-      if (!data.isAdmin === true) {
-        toast.error("ຂໍອະໄພທ່ານບໍ່ແມ່ນ Admin", ToastObjects);
-        dispatch({
-          type: USER_LOGIN_FAIL,
-        });
-      } else {
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-      }
-  
-      localStorage.setItem("userInfo", JSON.stringify(data));
+  try {
+    dispatch({ type: USER_LOGIN_REQUEST });
 
-    } catch (error) {
-      const message =
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const { data } = await axios.post(
+      `/api/users/login`,
+      { email, password },
+      config
+    );
+
+    if (!data.isAdmin === true) {
+      toast.error("ຂໍອະໄພທ່ານບໍ່ແມ່ນ Admin", ToastObjects);
+      dispatch({
+        type: USER_LOGIN_FAIL,
+      });
+    } else {
+      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+    }
+
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    const message =
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message;
     if (message === "Not authorized, token failed") {
       dispatch(logout());
     }
-      dispatch({
-        type: USER_LOGIN_FAIL,
-        payload: message,
-      });
-    }
-  };
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload: message,
+    });
+  }
+};
 
+// LOGOUT
 
-  // LOGOUT
+export const logout = () => (dispatch) => {
+  localStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_LIST_RESET });
+};
 
-  export const logout = () => (dispatch) => {
-    localStorage.removeItem("userInfo");
-    dispatch({ type: USER_LOGOUT });
-    dispatch({ type: USER_LIST_RESET });
-  };
-
-
-
-  // ALL USER
+// ALL USER
 export const listUser = () => async (dispatch, getState) => {
   try {
     dispatch({ type: USER_LIST_REQUEST });
@@ -106,4 +103,37 @@ export const listUser = () => async (dispatch, getState) => {
   }
 };
 
- 
+
+// DELETED USER
+export const deleteUser = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_DELETE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/users/${id}`, config);
+
+    dispatch({ type: USER_DELETE_SUCCESS });
+    window.location.reload()
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: USER_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};

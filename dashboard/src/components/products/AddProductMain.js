@@ -8,7 +8,6 @@ import Toast from "../LoadingError/Toast";
 import Message from "./../LoadingError/Error";
 import Loading from "./../LoadingError/Loading";
 
-
 const ToastObjects = {
   pauseOnFocusLoss: false,
   draggable: false,
@@ -39,11 +38,31 @@ const AddProductMain = () => {
     }
   }, [product, dispatch]);
 
+  
+
+  //image from user
+  const [selectedFile, setSelectedFile] = useState();
+  const [imageName, setImageName] = useState();
+
+  const handleFileInput = (e) => {
+    e.preventDefault();
+    setImageName(e.target.files[0]);
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      console.log(reader.result);
+      setSelectedFile(reader.result);
+    };
+    reader.onerror = (error) => {
+      console.log("error", error);
+    };
+  };
+  console.log(imageName && imageName.name);
+
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(createProduct(name, price, description, image, countInStock));
+    dispatch(createProduct(name, price, description, selectedFile, countInStock));
   };
-
   return (
     <>
       <Toast />
@@ -69,7 +88,7 @@ const AddProductMain = () => {
                   {loading && <Loading />}
                   <div className="mb-4">
                     <label htmlFor="product_title" className="form-label">
-                     ຊື່ສິນຄ້າ
+                      ຊື່ສິນຄ້າ
                     </label>
                     <input
                       type="text"
@@ -108,7 +127,6 @@ const AddProductMain = () => {
                       value={countInStock}
                       onChange={(e) => setCountInStock(e.target.value)}
                     />
-                    
                   </div>
                   <div className="mb-4">
                     <label className="form-label">ລາຍລະອຽດຂອງສີນຄ້າ</label>
@@ -123,14 +141,12 @@ const AddProductMain = () => {
                   </div>
                   <div className="mb-4">
                     <label className="form-label">ເພີ່ມຮູບພາບ</label>
+                    <input className="form-control" value={image} />
                     <input
-                      className="form-control"
-                      
-                      value={image}
-                      required
-                      onChange={(e) => setImage(e.target.value)}
+                      className="form-control mt-3"
+                      type="file"
+                      onChange={handleFileInput}
                     />
-                    <input className="form-control mt-3" type="file" />
                   </div>
                 </div>
               </div>

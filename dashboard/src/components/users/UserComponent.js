@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { listUser } from "../../Redux/Actions/userActions";
+import { deleteUser, listUser } from "../../Redux/Actions/userActions";
 import Loading from "./../LoadingError/Loading";
 import Message from "./../LoadingError/Error";
-
+import "../../App.css";
 const UserComponent = () => {
-
   const dispatch = useDispatch();
 
   const userList = useSelector((state) => state.userList);
@@ -16,6 +15,11 @@ const UserComponent = () => {
     dispatch(listUser());
   }, [dispatch]);
 
+  const deletehandler = (id) => {
+    if (window.confirm("Are you sure??")) {
+      dispatch(deleteUser(id));
+    }
+  };
   return (
     <section className="content-main">
       <div className="content-header">
@@ -67,6 +71,7 @@ const UserComponent = () => {
                 <div className="col" key={user._id}>
                   <div className="card card-user shadow-sm">
                     <div className="card-header">
+                      <div onClick={() => deletehandler(user._id)}> X </div>
                       <img
                         className="img-md img-avatar"
                         src="images/favicon.png"

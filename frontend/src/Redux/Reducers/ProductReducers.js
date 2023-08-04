@@ -9,6 +9,10 @@ import {
     PRODUCT_LIST_FAIL,
     PRODUCT_LIST_REQUEST, 
     PRODUCT_LIST_SUCCESS,
+    PRODUCT_STOCK_FAIL,
+    PRODUCT_STOCK_REQUEST,
+    PRODUCT_STOCK_RESET,
+    PRODUCT_STOCK_SUCCESS,
 
 
  } from "../Constans/ProductConstans";
@@ -65,6 +69,23 @@ export const productCreateReviewReducer = (state = {}, action) => {
     case PRODUCT_CREATE_REVIEW_FAIL:
       return { loading: false, error: action.payload };
     case PRODUCT_CREATE_REVIEW_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+// PRODUCT UPDATE PRODUCT IN STOCK
+export const productStockReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_STOCK_REQUEST:
+      return { loading: true };
+    case PRODUCT_STOCK_SUCCESS:
+      return { loading: false, success: true };
+    case PRODUCT_STOCK_FAIL:
+      return { loading: false, error: action.payload };
+    case PRODUCT_STOCK_RESET:
       return {};
     default:
       return state;

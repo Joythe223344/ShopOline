@@ -4,17 +4,18 @@ import Rating from "../components/homeComponents/Rating";
 import { Link } from "react-router-dom";
 import Message from "./../components/LoadingError/Error";
 import { useDispatch, useSelector } from "react-redux";
-import { createProductReview, listProductDetails } from "../Redux/Actions/ProductActions";
+import {
+  createProductReview,
+  listProductDetails,
+} from "../Redux/Actions/ProductActions";
 import Loading from "./../components/LoadingError/Loading";
 import { PRODUCT_CREATE_REVIEW_RESET } from "../Redux/Constans/ProductConstans";
 import moment from "moment";
 
 const SingleProduct = ({ history, match }) => {
-
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  
 
   const productId = match.params.id;
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ const SingleProduct = ({ history, match }) => {
     success: successCreateReview,
   } = productReviewCreate;
 
-  
   useEffect(() => {
     if (successCreateReview) {
       alert("Review Submitted");
@@ -55,7 +55,18 @@ const SingleProduct = ({ history, match }) => {
     );
   };
 
-
+  // kip
+  const formatCurrent = (price) => {
+    if (!price) {
+      return ""; // or some other default value
+    }
+    const formattedPrice = price.toLocaleString("id-ID", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true,
+    });
+    return formattedPrice.replace(".", ".");
+  };
 
   return (
     <>
@@ -83,7 +94,7 @@ const SingleProduct = ({ history, match }) => {
                   <div className="product-count col-lg-7 ">
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>ລາຄາ</h6>
-                      <span>${product.price}</span>
+                      <span>KIP {formatCurrent(Number(product.price))}</span>
                     </div>
                     <div className="flex-box d-flex justify-content-between align-items-center">
                       <h6>ສີນຄ້າໃນຮ້ານ</h6>
