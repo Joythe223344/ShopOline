@@ -907,15 +907,10 @@ ul.row-sm {
   line-height: 0.7;
   vertical-align: bottom;
 }
-
-.card-header {
-  position: relative;
-}
-.card-header div {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding-right: 10px;
+.removeUser {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }

@@ -71,7 +71,7 @@ const UserComponent = () => {
                 <div className="col" key={user._id}>
                   <div className="card card-user shadow-sm">
                     <div className="card-header">
-                      <div onClick={() => deletehandler(user._id)}> X </div>
+                      <div onClick={() => deletehandler(user._id)} className="removeUser"> X </div>
                       <img
                         className="img-md img-avatar"
                         src="images/favicon.png"
