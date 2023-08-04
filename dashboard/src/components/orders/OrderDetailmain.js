@@ -142,23 +142,6 @@ const OrderDetailmain = (props) => {
                   // free box
                   <p></p>
                 )}
-                {/* <div className="box shadow-sm bg-light mt-2">
-                  {order.isPaid ? (
-                    <button className="btn btn-success col-12">
-                      ຈ່າຍເງີນສຳເລັດ
-                    </button>
-                  ) : (
-                    <>
-                      {loadingDelivered && <Loading />}
-                      <button
-                        onClick={payHandler}
-                        className="btn btn-dark col-12"
-                      >
-                        ຈ່າຍເງີນຖືກຕ້ອງ
-                      </button>
-                    </>
-                  )}
-                </div> */}
               </div>
             </div>
           </div>

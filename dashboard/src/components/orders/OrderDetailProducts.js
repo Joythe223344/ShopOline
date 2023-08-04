@@ -29,7 +29,7 @@ const OrderDetailProducts = (props) => {
       maximumFractionDigits: 0,
       useGrouping: true,
     });
-    return formattedPrice.replace(".", ",");
+    return formattedPrice.replace(".", ".");
   };
   console.log(order);
   return (

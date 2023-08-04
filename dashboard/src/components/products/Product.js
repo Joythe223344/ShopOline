@@ -24,7 +24,7 @@ const Product = (props) => {
       maximumFractionDigits: 0,
       useGrouping: true,
     });
-    return formattedPrice.replace(".", ",");
+    return formattedPrice.replace(".", ".");
   };
   return (
     <>
