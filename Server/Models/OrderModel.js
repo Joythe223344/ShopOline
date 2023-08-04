@@ -29,7 +29,7 @@ const orderSchema = mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      required: true,
+      required: false,
       default: "Paypal",
     },
     paymentResult: {
@@ -68,6 +68,10 @@ const orderSchema = mongoose.Schema(
     },
     deliveredAt: {
       type: Date,
+    },
+    imageOrder: {
+      type: String,
+      required: false,
     },
   },
   {

@@ -13,6 +13,19 @@ const Product = (props) => {
     }
   };
 
+
+  // kip
+  const formatCurrent = (price) => {
+    if (!price) {
+      return ""; // or some other default value
+    }
+    const formattedPrice = price.toLocaleString("id-ID", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true,
+    });
+    return formattedPrice.replace(".", ",");
+  };
   return (
     <>
       <div className="col-md-6 col-sm-6 col-lg-3 mb-5">
@@ -24,7 +37,7 @@ const Product = (props) => {
             <Link to="#" className="title text-truncate">
               {product.name}
             </Link>
-            <div className="price mb-2">${product.price}</div>
+            <div className="price mb-2">{formatCurrent(Number(product.price))} KIP</div>
             <div className="row">
               <Link
                 to={`/product/${product._id}/edit`}

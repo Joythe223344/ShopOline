@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-   editProduct, 
-   updateProduct,
-} from "../../Redux/Actions/ProductActions";
+import { editProduct, updateProduct } from "../../Redux/Actions/ProductActions";
 import { PRODUCT_UPDATE_RESET } from "../../Redux/Constans/ProductConstans";
 import { toast } from "react-toastify";
 import Message from "./../LoadingError/Error";
@@ -24,7 +21,7 @@ const EditProductMain = (props) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
-  const [countInStock, setCountInStock, ] = useState(0);
+  const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
 
   const dispatch = useDispatch();
@@ -39,6 +36,20 @@ const EditProductMain = (props) => {
     success: successUpdate,
   } = productUpdate;
 
+  console.log(product);
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(
+      updateProduct({
+        _id: productId,
+        name,
+        price,
+        description,
+        image,
+        countInStock,
+      })
+    );
+  };
   useEffect(() => {
     if (successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_RESET });
@@ -55,20 +66,6 @@ const EditProductMain = (props) => {
       }
     }
   }, [product, dispatch, productId, successUpdate]);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(
-      updateProduct({
-        _id: productId,
-        name,
-        price,
-        description,
-        image,
-        countInStock,
-      })
-    );
-  };
 
   return (
     <>
@@ -142,7 +139,6 @@ const EditProductMain = (props) => {
                           value={countInStock}
                           onChange={(e) => setCountInStock(e.target.value)}
                         />
-                        
                       </div>
                       <div className="mb-4">
                         <label className="form-label">ລາຍລະອຽດຂອງສີນຄ້າ</label>

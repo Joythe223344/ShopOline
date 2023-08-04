@@ -15,6 +15,7 @@ import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
 import NotFound from "./screens/NotFound";
 import PrivateRouter from "./PrivateRouter";
+import PlaceOrderOnePayScreen from "./screens/PlaceOrderOnePayScreen";
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
         <PrivateRouter path="/shipping" component={ShippingScreen} />
         <PrivateRouter path="/payment" component={PaymentScreen} />
         <PrivateRouter path="/placeorder" component={PlaceOrderScreen} />
+        <PrivateRouter path="/placeorderOnePay" component={PlaceOrderOnePayScreen} />
         <PrivateRouter path="/order/:id" component={OrderScreen} />
         <Route path="*" component={NotFound} />
       </Switch>

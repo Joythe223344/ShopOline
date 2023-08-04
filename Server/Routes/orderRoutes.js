@@ -1,48 +1,47 @@
-import express  from "express";
+import express from "express";
 import asyncHandler from "express-async-handler";
-import { protect, admin  } from "../Middleware/AuthMiddleware.js";
+import { protect, admin } from "../Middleware/AuthMiddleware.js";
 import Order from "./../Models/OrderModel.js";
-
 
 const orderRouter = express.Router();
 
 // CREATE ORDER
 orderRouter.post(
-    "/",
-    protect,
-    asyncHandler(async (req, res) => {
-      const { 
-        orderItems, 
-        shippingAddress, 
-        paymentMethod, 
-        itemsPrice,
-        taxPrice, 
-        shippingPrice, 
-        totalPrice, 
-      } = req.body;
-      if (orderItems && orderItems.length === 0) {
-    res.status(400);
-    throw new Error("No order items");
-    return;
-  } else {
-    const order = new Order({
-        orderItems, 
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    const {
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+      imageOrder,
+    } = req.body;
+    if (orderItems && orderItems.length === 0) {
+      res.status(400);
+      throw new Error("No order items");
+      return;
+    } else {
+      const order = new Order({
+        orderItems,
         user: req.user._id,
-        shippingAddress, 
-        paymentMethod, 
+        shippingAddress,
+        paymentMethod,
         itemsPrice,
-        taxPrice, 
-        shippingPrice, 
-        totalPrice, 
-    });
+        taxPrice,
+        shippingPrice,
+        totalPrice,
+        imageOrder,
+      });
 
-const createOrder = await order.save();
-res.status(201).json(createOrder);
-  }
- })  
+      const createOrder = await order.save();
+      res.status(201).json(createOrder);
+    }
+  })
 );
-
-
 
 // ADMIN GET ALL ORDERS
 orderRouter.get(
@@ -51,23 +50,27 @@ orderRouter.get(
   admin,
   asyncHandler(async (req, res) => {
     const orders = await Order.find({})
-      .sort({ _id: -1 })
+      .sort({
+        _id: -1,
+      })
       .populate("user", "id name email");
     res.json(orders);
   })
 );
-
 
 // USER LOGIN ORDERS
 orderRouter.get(
   "/",
   protect,
   asyncHandler(async (req, res) => {
-    const order = await Order.find({ user: req.user._id }).sort({ _id: -1 });
+    const order = await Order.find({
+      user: req.user._id,
+    }).sort({
+      _id: -1,
+    });
     res.json(order);
   })
 );
-
 
 // GET ORDER BY ID
 orderRouter.get(
@@ -78,7 +81,6 @@ orderRouter.get(
       "user",
       "name email"
     );
-
     if (order) {
       res.json(order);
     } else {
@@ -88,15 +90,12 @@ orderRouter.get(
   })
 );
 
-
-
 // ORDER IS PAID
 orderRouter.put(
   "/:id/pay",
   protect,
   asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
-
     if (order) {
       order.isPaid = true;
       order.paidAt = Date.now();
@@ -116,8 +115,7 @@ orderRouter.put(
   })
 );
 
-
-// ORDER IS PAID
+// ORDER IS DELIVERED
 orderRouter.put(
   "/:id/delivered",
   protect,
@@ -136,4 +134,7 @@ orderRouter.put(
     }
   })
 );
+
+
+
 export default orderRouter;

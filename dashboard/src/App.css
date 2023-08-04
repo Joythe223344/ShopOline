@@ -149,6 +149,7 @@ a.disabled {
 body {
   position: relative;
   min-height: 100vh;
+  font-family: 'Noto Sans Lao', sans-serif;
 }
 
 body.offcanvas-active {
@@ -905,4 +906,16 @@ ul.row-sm {
   font-size: 1.2rem;
   line-height: 0.7;
   vertical-align: bottom;
+}
+
+.card-header {
+  position: relative;
+}
+.card-header div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding-right: 10px;
 }

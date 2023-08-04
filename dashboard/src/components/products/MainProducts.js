@@ -20,6 +20,7 @@ const MainProducts = (props) => {
     dispatch(listProducts());
   }, [dispatch, successDelete]);
 
+  console.log(products);
   return (
     <section className="content-main">
       <div className="content-header">

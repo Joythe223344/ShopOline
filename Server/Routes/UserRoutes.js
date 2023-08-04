@@ -135,6 +135,25 @@ userRouter.get(
   })
 );
 
+
+// DELETED USER 
+userRouter.delete(
+  "/:id",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      await user.deleteOne();
+      res.json({ message: "ລົບ User ແລ້ວ" });
+    } else {
+      res.status(404);
+      throw new Error("ບໍ່ພົບ User");
+    }
+  })
+);
+
+
 export default userRouter;
 
 

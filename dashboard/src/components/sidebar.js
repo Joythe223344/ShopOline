@@ -2,10 +2,11 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 
 const Sidebar = () => {
+  
   return (
     <div>
       <aside className="navbar-aside" id="offcanvas_aside">
-        <div className="aside-top">
+        <div className="aside-top" >
           <Link to="/" className="brand-wrap">
             <img
               src="/images/logo.png"
@@ -44,7 +45,7 @@ const Sidebar = () => {
                 <span className="text">ຈັດການຂໍ້ມູນສິນຄ້າ</span>
               </NavLink>
             </li>
-            <li className="menu-item">
+            <li className="menu-item" >
               <NavLink
                 activeClassName="active"
                 className="menu-link"
@@ -60,11 +61,11 @@ const Sidebar = () => {
                 className="menu-link"
                 to="/category"
               >
-               <i className="icon fas fa-list"></i>
+                <i className="icon fas fa-list"></i>
                 <span className="text"></span>
               </NavLink>
             </li>
-            <li className="menu-item">
+            <li className="menu-item" >
               <NavLink
                 activeClassName="active"
                 className="menu-link"
@@ -74,7 +75,7 @@ const Sidebar = () => {
                 <span className="text">ລາຍງານ</span>
               </NavLink>
             </li>
-            <li className="menu-item">
+            <li className="menu-item" >
               <NavLink
                 activeClassName="active"
                 className="menu-link"
@@ -84,7 +85,7 @@ const Sidebar = () => {
                 <span className="text">ລາຍງານ ຂໍ້ມູນຜູ້ໃຊ້</span>
               </NavLink>
             </li>
-            <li className="menu-item">
+            <li className="menu-item" >
               <NavLink
                 activeClassName="active"
                 className="menu-link disabled"

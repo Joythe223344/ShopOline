@@ -20,24 +20,24 @@ import {
 // CREATE ORDER
 export const createOrder = (order) => async (dispatch, getState) => {
   try {
+    // console.log(order['imageOrder']);
     dispatch({ type: ORDER_CREATE_REQUEST });
-
     const {
       userLogin: { userInfo },
     } = getState();
-
     const config = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-
-    const { data } = await axios.post(`/api/orders`, order, config);
+    const { data } = await axios.post(`/api/orders/`, order, config);
+    console.log(data);
     dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
     dispatch({ type: CART_CLEAR_ITEMS, payload: data });
 
     localStorage.removeItem("cartItems");
+    window.location.reload();
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -92,18 +92,15 @@ export const payOrder =
   (orderId, paymentResult) => async (dispatch, getState) => {
     try {
       dispatch({ type: ORDER_PAY_REQUEST });
-
       const {
         userLogin: { userInfo },
       } = getState();
-
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-
       const { data } = await axios.put(
         `/api/orders/${orderId}/pay`,
         paymentResult,

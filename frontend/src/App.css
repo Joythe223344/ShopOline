@@ -1,6 +1,39 @@
+/* QRCODE Style */
+.QRCode-style {
+  width: 300px;
+  height: 350px;
+}
+.custom-upload-image {
+  width: 300px;
+  height: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #a5aec04f;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.custom-label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #817d7d;
+}
+.box-free {
+  height: 150px;
+  width: 10px;
+}
+
+
+
 body {
   margin: 0;
-  font-family: "Josefin Sans", sans-serif;
+  font-family: 'Noto Sans Lao', sans-serif;
   /* font-family: 'Open Sans', sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

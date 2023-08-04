@@ -1,8 +1,7 @@
-import express  from "express";
+import express from "express";
 import asyncHandler from "express-async-handler";
 import Product from "./../Models/ProductModel.js";
 import { protect, admin } from "./../Middleware/AuthMiddleware.js";
-
 
 const productRoute = express.Router();
 
@@ -29,8 +28,6 @@ productRoute.get(
   })
 );
 
-
-
 // ADMIN GET ALL PRODUCT WITHOUT SEARCH AND PEGINATION
 productRoute.get(
   "/all",
@@ -42,63 +39,57 @@ productRoute.get(
   })
 );
 
-
 // GET SINGLE PRODUCT
 productRoute.get(
-    "/:id", 
-    asyncHandler(async(req, res) => {
-        const product = await Product.findById(req.params.id);
-        if (product) {
-            res.json(product);
-        } else {
-            res.status(404);
-            throw new Error("ບໍ່ພົບສີນຄ້າ");
-        }
-       
-    })
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404);
+      throw new Error("ບໍ່ພົບສີນຄ້າ");
+    }
+  })
 );
-
-
 
 // PRODUCT REVIEW
 productRoute.post(
-    "/:id/review",
-    protect,
-    asyncHandler(async (req, res) => {
-      const { rating, comment } = req.body;
-      const product = await Product.findById(req.params.id);
-  
-      if (product) {
-        const alreadyReviewed = product.reviews.find(
-          (r) => r.user.toString() === req.user._id.toString()
-        );
-        if (alreadyReviewed) {
-          res.status(400);
-          throw new Error("Product already Reviewed");
-        }
-        const review = {
-          name: req.user.name,
-          rating: Number(rating),
-          comment,
-          user: req.user._id,
-        };
-  
-        product.reviews.push(review);
-        product.numReviews = product.reviews.length;
-        product.rating =
+  "/:id/review",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { rating, comment } = req.body;
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      const alreadyReviewed = product.reviews.find(
+        (r) => r.user.toString() === req.user._id.toString()
+      );
+      if (alreadyReviewed) {
+        res.status(400);
+        throw new Error("Product already Reviewed");
+      }
+      const review = {
+        name: req.user.name,
+        rating: Number(rating),
+        comment,
+        user: req.user._id,
+      };
+
+      product.reviews.push(review);
+      product.numReviews = product.reviews.length;
+      product.rating =
         product.reviews.reduce((acc, item) => item.rating + acc, 0) /
         product.reviews.length;
-  
-        await product.save();
-        res.status(201).json({ message: "Reviewed Added" });
-      } else {
-        res.status(404);
-        throw new Error("Product not Found");
-      }
-    })
-  );
 
-
+      await product.save();
+      res.status(201).json({ message: "Reviewed Added" });
+    } else {
+      res.status(404);
+      throw new Error("Product not Found");
+    }
+  })
+);
 
 // DELETE PRODUCT
 productRoute.delete(
@@ -117,14 +108,13 @@ productRoute.delete(
   })
 );
 
-
 // CREATE PRODUCT
 productRoute.post(
   "/",
   protect,
   admin,
   asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock} = req.body;
+    const { name, price, description, image, countInStock } = req.body;
     const productExist = await Product.findOne({ name });
     if (productExist) {
       res.status(400);
@@ -149,9 +139,6 @@ productRoute.post(
   })
 );
 
-
-
-
 // UPDATE PRODUCT
 productRoute.put(
   "/:id",
@@ -172,6 +159,26 @@ productRoute.put(
     } else {
       res.status(404);
       throw new Error("Product not found");
+    }
+  })
+);
+// UPDATE STOCK PRODUCT
+productRoute.put(
+  "/:id/updatestock",
+  asyncHandler(async (req, res) => {
+    const { qty } = req.body;
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      if (product.countInStock > 0) {
+        product.countInStock -= qty;
+        const updatedProduct = await product.save();
+        res.json(updatedProduct);
+      } else {
+        throw new Error("Not Found Product Or Out Of Product In Stock !");
+      }
+    } else {
+      res.status(404);
+      throw new Error("No Product Found !");
     }
   })
 );

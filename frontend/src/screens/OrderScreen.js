@@ -3,17 +3,16 @@ import { Link } from "react-router-dom";
 import Header from "./../components/Header";
 import { PayPalButton } from "react-paypal-button-v2";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderDetails, payOrder  } from "../Redux/Actions/OrderActions";
+import { getOrderDetails, payOrder } from "../Redux/Actions/OrderActions";
 import Loading from "./../components/LoadingError/Loading";
 import Message from "./../components/LoadingError/Error";
 import moment from "moment";
 import axios from "axios";
 import { ORDER_PAY_RESET } from "../Redux/Constans/OrderConstants";
 
-
-
 const OrderScreen = ({ match }) => {
   window.scrollTo(0, 0);
+
   const [sdkReady, setSdkReady] = useState(false);
   const orderId = match.params.id;
   const dispatch = useDispatch();
@@ -23,7 +22,36 @@ const OrderScreen = ({ match }) => {
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
-  if (!loading) {
+  const [statusOnePay, setStatusOnePay] = useState(false);
+  const [statusisPaid, setStatusIsPaid] = useState(false);
+  const [statusisDelivered, setStatusIisDelivered] = useState(false);
+
+  useEffect(() => {
+    //check onepay or paypal
+    if (order && order.paymentMethod === "OnePay") {
+      setStatusOnePay(true);
+    } else if (order && order.paymentMethod === "PayPal") {
+      setStatusOnePay(false);
+    }
+
+    //check ispaid
+    if (order && order.isPaid == true) {
+      console.log("Paid already");
+      setStatusIsPaid(true);
+    } else if (order && order.isPaid == false) {
+      console.log("Not Paid");
+      setStatusIsPaid(false);
+    }
+
+    //check isDelivered
+    if (order && order.isDelivered == true) {
+      setStatusIisDelivered(true);
+    } else if (order && order.isDelivered == false) {
+      setStatusIisDelivered(false);
+    }
+  }, [order]);
+
+  if (!loading && order) {
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
     };
@@ -61,6 +89,17 @@ const OrderScreen = ({ match }) => {
     dispatch(payOrder(orderId, paymentResult));
   };
 
+  // kip
+  const formatCurrent = (price) => {
+    if (!price) {
+      return ""; // or some other default value
+    }
+    const formattedPrice = price.toLocaleString("id-ID", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+    return formattedPrice.replace(".", ".");
+  };
   return (
     <>
       <Header />
@@ -113,10 +152,32 @@ const OrderScreen = ({ match }) => {
                         </p>
                       </div>
                     ) : (
-                      <div className="bg-danger p-2 col-12">
-                        <p className="text-white text-center text-sm-start">
-                          Not Paid
-                        </p>
+                      <div>
+                        {/* style={{ display: statusOnePay ? "none" : "block" }} */}
+                        {/* //paypal */}
+                        <div
+                          className="bg-danger p-2 col-12 "
+                          style={{ display: statusOnePay ? "none" : "block" }}
+                        >
+                          <p className="text-white text-center text-sm-start">
+                            Not Paid
+                          </p>
+                        </div>
+
+                        {/* //onepay */}
+                        <div
+                          className=" p-2 col-12 "
+                          style={{
+                            display: statusOnePay ? "block" : "none",
+                            backgroundColor: statusisPaid
+                              ? "#0dcaf0"
+                              : "#0077b6", //false = awai if true paid already
+                          }}
+                        >
+                          <p className="text-white text-center text-sm-start">
+                            {statusisPaid ? "Paid already" : "Is Checking "}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -159,32 +220,35 @@ const OrderScreen = ({ match }) => {
 
             <div className="row order-products justify-content-between">
               <div className="col-lg-8">
-                {order.orderItems.length === 0 ? (
+                {order && order.orderItems.length === 0 ? (
                   <Message variant="alert-info mt-5">
                     Your order is empty
                   </Message>
                 ) : (
                   <>
-                    {order.orderItems.map((item, index) => (
-                      <div className="order-product row" key={index}>
-                        <div className="col-md-3 col-6">
-                          <img src={item.image} alt={item.name} />
+                    {order &&
+                      order.orderItems.map((item, index) => (
+                        <div className="order-product row" key={index}>
+                          <div className="col-md-3 col-6">
+                            <img src={item.image} alt={item.name} />
+                          </div>
+                          <div className="col-md-5 col-6 d-flex align-items-center">
+                            <Link to={`/products/${item.product}`}>
+                              <h6>{item.name}</h6>
+                            </Link>
+                          </div>
+                          <div className="mt-3 mt-md-0 col-md-2 col-6  d-flex align-items-center flex-column justify-content-center ">
+                            <h4>QUANTITY</h4>
+                            <h6>{item.qty}</h6>
+                          </div>
+                          <div className="mt-3 mt-md-0 col-md-2 col-6 align-items-end  d-flex flex-column justify-content-center ">
+                            <h4>SUBTOTAL</h4>
+                            <h6>
+                              {formatCurrent(Number(item.qty * item.price))} KIP
+                            </h6>
+                          </div>
                         </div>
-                        <div className="col-md-5 col-6 d-flex align-items-center">
-                          <Link to={`/products/${item.product}`}>
-                            <h6>{item.name}</h6>
-                          </Link>
-                        </div>
-                        <div className="mt-3 mt-md-0 col-md-2 col-6  d-flex align-items-center flex-column justify-content-center ">
-                          <h4>QUANTITY</h4>
-                          <h6>{item.qty}</h6>
-                        </div>
-                        <div className="mt-3 mt-md-0 col-md-2 col-6 align-items-end  d-flex flex-column justify-content-center ">
-                          <h4>SUBTOTAL</h4>
-                          <h6>${item.qty * item.price}</h6>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </>
                 )}
               </div>
@@ -196,41 +260,42 @@ const OrderScreen = ({ match }) => {
                       <td>
                         <strong>Products</strong>
                       </td>
-                      <td>${order.itemsPrice}</td>
+                      <td>{formatCurrent(Number(order.itemsPrice))} KIP</td>
                     </tr>
                     <tr>
                       <td>
                         <strong>Shipping</strong>
                       </td>
-                      <td>${order.shippingPrice}</td>
+                      <td>{formatCurrent(Number(order.shippingPrice))} KIP</td>
                     </tr>
                     <tr>
                       <td>
                         <strong>Tax</strong>
                       </td>
-                      <td>${order.taxPrice}</td>
+                      <td>{formatCurrent(Number(order.taxPrice))} KIP</td>
                     </tr>
                     <tr>
                       <td>
                         <strong>Total</strong>
                       </td>
-                      <td>${order.totalPrice}</td>
+                      <td>{formatCurrent(Number(order.totalPrice))} KIP</td>
                     </tr>
                   </tbody>
                 </table>
-                {!order.isPaid && (
-                  <div className="col-12">
-                    {loadingPay && <Loading />}
-                    {!sdkReady ? (
-                      <Loading />
-                    ) : (
-                      <PayPalButton
-                        amount={order.totalPrice}
-                        onSuccess={successPaymentHandler}
-                      />
-                    )}
-                  </div>
-                )}
+                <div
+                  className="col-12"
+                  style={{ display: statusOnePay ? "none" : "block" }}
+                >
+                  {loadingPay && <Loading />}
+                  {!sdkReady ? (
+                    <Loading />
+                  ) : (
+                    <PayPalButton
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </>
